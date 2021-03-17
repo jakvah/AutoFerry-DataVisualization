@@ -1,0 +1,9 @@
+# Python requirements
+mariadb
+
+# Node-Red requirements
+Cronplus
+Clarify
+Loxone
+mysql
+worldmap
