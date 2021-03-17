@@ -1,2 +1,2 @@
 # AutoFerry-DataVisualization
-Collection and visualizing data from the Autoferry project @ NTNU 
+Collecting and visualizing data from the Autoferry project @ NTNU 
