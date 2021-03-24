@@ -2,6 +2,11 @@ import time
 import mariadb as db
 import sys
 
+# Name of the tables containing position data for the 3 objects
+TABLE_NAME_1 = "obj1"
+TABLE_NAME_2 = "obj2"
+TABLE_NAME_3 = "obj3"
+
 # Will scan through txt file every READ_INTERVAL seconds
 READ_INTERVAL = 10
 
@@ -40,9 +45,9 @@ def insert_coordinates(x,y,name):
 
 def main():
     print("Clearing tables...")
-    clear_table("ojb1")
-    clear_table("ojb2")
-    clear_table("ojb3")
+    clear_table(TABLE_NAME_1)
+    clear_table(TABLE_NAME_2)
+    clear_table(TABLE_NAME_3)
     
     obj_1_counter = 1
     obj_2_counter = 2
@@ -57,14 +62,14 @@ def main():
                     # Obj 1
                     x = line.split(",")[0]
                     z = line.split(",")[2]
-                    insert_coordinates(x,z,"ojb1")
+                    insert_coordinates(x,z,TABLE_NAME_1)
                     obj_1_counter += 3
 
                 elif i == obj_2_counter:
                     # Obj 2
                     x = line.split(",")[0]
                     z = line.split(",")[2]
-                    insert_coordinates(x,z,"ojb2")
+                    insert_coordinates(x,zx,TABLE_NAME_2)
 
                     obj_2_counter += 3
 
@@ -72,7 +77,7 @@ def main():
                     # Obj 3
                     x = line.split(",")[0]
                     z = line.split(",")[2]
-                    insert_coordinates(x,z,"ojb3")
+                    insert_coordinates(x,z,TABLE_NAME_3)
 
                     obj_3_counter += 3
         except Exception as e:
