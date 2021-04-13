@@ -1,6 +1,7 @@
 import time
 import mariadb as db
 import sys
+import math
 
 # Name of the tables containing position data for the 3 objects
 TABLE_NAME_1 = "obj1"
@@ -34,12 +35,27 @@ def clear_table(table_name):
     conn.commit()
     conn.close()
 
-def insert_coordinates(x,y,name):
+
+def ned_to_llh(x, z):
+    lat0 = 63.435167
+    long0 = 10.392917
+    re = 6378137
+    Rn = re / math.sqrt(1 - 0.0818**2 * math.sin(lat0))
+    Rm = (Rn * (1 - 0.0818**2)) / math.sqrt(1 - 0.0818**2 * math.sin(lat0))
+    llh_array = []
+    lat = x * math.atan2(1, Rm) + lat0
+    long = z * math.atan2(1, Rn * math.cos(lat0)) + long0
+    llh_array.append(lat)
+    llh_array.append(long)
+    return llh_array
+
+
+def insert_coordinates(x,y,timestamp,name):
     conn = get_db_connection()
     cur = conn.cursor()
 
-    query = f"INSERT INTO {name} (x,z) VALUES (?,?)"
-    cur.execute(query,(float(x),float(y)))
+    query = f"INSERT INTO {name} (x,z,time) VALUES (?,?,?)"
+    cur.execute(query,(x,y,timestamp))
     conn.commit()
     conn.close()
 
@@ -60,24 +76,44 @@ def main():
             for i,line in enumerate(pos_file):
                 if i == obj_1_counter:
                     # Obj 1
-                    x = line.split(",")[0]
-                    z = line.split(",")[2]
-                    insert_coordinates(x,z,TABLE_NAME_1)
+                    cords = line.split("@")[0]
+                    timestamp = line.split("@")[1]
+                    
+                    x = cords.split(",")[0]
+                    z = cords.split(",")[2]
+                    boat1_array = ned_to_llh(float(x), float(z))
+                    x_new = boat1_array[0]
+                    z_new = boat1_array[1]
+                    print(x_new,z_new)
+                    insert_coordinates(x_new,z_new,timestamp,TABLE_NAME_1)
                     obj_1_counter += 3
 
                 elif i == obj_2_counter:
                     # Obj 2
-                    x = line.split(",")[0]
-                    z = line.split(",")[2]
-                    insert_coordinates(x,zx,TABLE_NAME_2)
+                    cords = line.split("@")[0]
+                    timestamp = line.split("@")[1]
+                    
+                    x = cords.split(",")[0]
+                    z = cords.split(",")[2]
+                    boat1_array = ned_to_llh(float(x), float(z))
+                    x = boat1_array[0]
+                    z = boat1_array[1]
+                    print(x,z)
+                    insert_coordinates(x,z,timestamp,TABLE_NAME_2)
 
                     obj_2_counter += 3
 
                 elif i == obj_3_counter:
-                    # Obj 3
-                    x = line.split(",")[0]
-                    z = line.split(",")[2]
-                    insert_coordinates(x,z,TABLE_NAME_3)
+                    # Obj 3cords = line.split("@")[0]
+                    timestamp = line.split("@")[1]
+                    
+                    x = cords.split(",")[0]
+                    z = cords.split(",")[2]
+                    boat1_array = ned_to_llh(float(x), float(z))
+                    x = boat1_array[0]
+                    z = boat1_array[1]
+                    print(x,z)
+                    insert_coordinates(x,z,timestamp,TABLE_NAME_3)
 
                     obj_3_counter += 3
         except Exception as e:

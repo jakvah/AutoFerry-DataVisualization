@@ -7,3 +7,4 @@ Clarify
 Loxone
 mysql
 worldmap
+nodered-dashboard
