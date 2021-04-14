@@ -3,9 +3,9 @@ import mariadb as db
 import math
 
 # Name of the tables containing position data for the 3 objects
-TABLE_NAME_1 = "obj1"
-TABLE_NAME_2 = "obj2"
-TABLE_NAME_3 = "obj3"
+TABLE_NAME_1 = "obj1_pos"
+TABLE_NAME_2 = "obj2_pos"
+TABLE_NAME_3 = "obj3_pos"
 
 TABLE_NAME_1_SPEED = "obj1_speed"
 TABLE_NAME_2_SPEED = "obj2_speed"
@@ -21,7 +21,6 @@ READ_INTERVAL = 10
 
 # Change path to match the location of your unity project path
 TXT_FILE = r"C:\Users\jakob\Documents\NTNU\EiT\Gemini\Gemini-Unity\Assets\Scripts\temp.txt"
-
 
 def get_db_connection():
     try:
@@ -62,10 +61,11 @@ def ned_to_llh(x, z):
 
 
 def calculate_speed(x, previous_x, z, previous_z, timestamp, previous_timestamp):
-    distance = math.sqrt(pow(x - previous_x, 2) + pow(z - previous_z, 2))
+    distance = math.sqrt(pow(float(x) - previous_x, 2) + pow(float(z) - previous_z, 2))
+    time_diff = int(timestamp) - int(previous_timestamp)
 
-    return abs(distance) // timestamp - previous_timestamp
-
+    speed = abs(distance / time_diff)
+    return speed
 
 def insert_coordinates(x, y, timestamp, name):
     conn = get_db_connection()
@@ -111,20 +111,23 @@ def main():
                     # Obj 1
                     cords = line.split("@")[0]
                     timestamp = line.split("@")[1]
+                    
                     x = cords.split(",")[0]
                     z = cords.split(",")[2]
 
                     if obj_1_counter > 1:
                         speed = calculate_speed(x, x_previous_1, z, z_previous_1, timestamp, timestamp_previous_1)
                         insert_speed(speed, timestamp_previous_1, TABLE_NAME_1_SPEED)
-                    x_previous_1 = x
-                    z_previous_1 = z
+                    x_previous_1 = float(x)
+                    z_previous_1 = float(z)
+                    
                     timestamp_previous_1 = timestamp
 
                     boat1_array = ned_to_llh(float(x), float(z))
+
                     x_new = boat1_array[0]
                     z_new = boat1_array[1]
-                    print(x_new, z_new)
+                    #print(x_new, z_new)
                     insert_coordinates(x_new, z_new, timestamp, TABLE_NAME_1)
                     obj_1_counter += 3
 
@@ -135,17 +138,17 @@ def main():
                     x = cords.split(",")[0]
                     z = cords.split(",")[2]
 
-                    if obj_1_counter > 2:
+                    if obj_2_counter > 2:
                         speed = calculate_speed(x, x_previous_2, z, z_previous_2, timestamp, timestamp_previous_2)
                         insert_speed(speed, timestamp_previous_2, TABLE_NAME_2_SPEED)
-                    x_previous_2 = x
-                    z_previous_2 = z
+                    x_previous_2 = float(x)
+                    z_previous_2 = float(z)
                     timestamp_previous_2 = timestamp
 
                     boat2_array = ned_to_llh(float(x), float(z))
                     x = boat2_array[0]
                     z = boat2_array[1]
-                    print(x, z)
+                    #print(x, z)
                     insert_coordinates(x, z, timestamp, TABLE_NAME_2)
 
                     obj_2_counter += 3
@@ -157,17 +160,17 @@ def main():
                     x = cords.split(",")[0]
                     z = cords.split(",")[2]
 
-                    if obj_1_counter > 3:
+                    if obj_3_counter > 3:
                         speed = calculate_speed(x, x_previous_3, z, z_previous_3, timestamp, timestamp_previous_3)
                         insert_speed(speed, timestamp_previous_3, TABLE_NAME_3_SPEED)
-                    x_previous_3 = x
-                    z_previous_3 = z
+                    x_previous_3 = float(x)
+                    z_previous_3 = float(z)
                     timestamp_previous_3 = timestamp
 
                     boat3_array = ned_to_llh(float(x), float(z))
                     x = boat3_array[0]
                     z = boat3_array[1]
-                    print(x, z)
+                    #print(x, z)
                     insert_coordinates(x, z, timestamp, TABLE_NAME_3)
 
                     obj_3_counter += 3
