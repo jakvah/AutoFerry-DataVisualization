@@ -36,7 +36,8 @@ public class PositionTest : MonoBehaviour
         float y = transform.position.y;
         float z = transform.position.z;
         Debug.Log("Hello");
-        string timeString = DateTime.Now.ToString("HH:mm:ss");
+        Int32 unixTimestamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+        string timeString = unixTimestamp.ToString();
         Debug.Log(timeString);
 
         string folder =@"C:\Users\jakob\Documents\NTNU\EiT\Gemini\Gemini-Unity\Assets\Scripts\"; 
