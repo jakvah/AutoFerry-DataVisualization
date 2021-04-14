@@ -8,6 +8,11 @@ TABLE_NAME_1 = "obj1"
 TABLE_NAME_2 = "obj2"
 TABLE_NAME_3 = "obj3"
 
+username = "root"
+pwd = "eit123"
+host = "localhost"
+database = "eit"
+
 # Will scan through txt file every READ_INTERVAL seconds
 READ_INTERVAL = 10
 
@@ -16,10 +21,10 @@ TXT_FILE = r"C:\Users\jakob\Documents\NTNU\EiT\Gemini\Gemini-Unity\Assets\Script
 def get_db_connection():
     try:
         conn = db.connect(
-            user = "root",
-            password = "eit123",
-            host = "localhost",
-            database = "eit"
+            user=username,
+            password=pwd,
+            host=host,
+            database=database
         )
         return conn
     except db.Error as e:
