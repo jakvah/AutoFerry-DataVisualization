@@ -14,3 +14,6 @@ Note: The user must update the folder PATH in both ``GetPositionData.cs`` and ``
 You must install a SQL database of your choice. Any SQL database should work, but for reference, a MardiaDB database has been used.
 
 Node-RED has been used to send data from the *database* to the Clarify API, and to plot the autoferry on a map, together with other boats in Trondheim (which position has been extracted for Kystverkets AIS API).
+
+
+**NB**: Make sure to install the required dependencies for both the Python script and Node-RED. These can be found in ```requirements.txt```.
